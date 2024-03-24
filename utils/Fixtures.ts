@@ -1,35 +1,44 @@
 import { DashboardPage, SIDE_PANEL_TABS } from "../pages/DashboardPage";
 import { LoginPage } from "../pages/LoginPage";
-import { PlaywrightTestOptions, test as base } from "@playwright/test";
+import { type PlaywrightTestOptions, test as base } from "@playwright/test";
+import { Config } from "./Config";
 
 type Fixtures = {
-  loginPage: LoginPage;
-  dashboardPage: DashboardPage;
+	loginPage: LoginPage;
+	dashboardPage: DashboardPage;
+	config: Config;
 };
 
 type TestOptions = {
-  sidePanelTabs: typeof SIDE_PANEL_TABS;
+	sidePanelTabs: typeof SIDE_PANEL_TABS;
 };
 
+const config = new Config();
+
 export const test = base.extend<Fixtures & PlaywrightTestOptions & TestOptions>(
-  {
-    baseURL: process.env.BASE_URL!,
-    loginPage: async ({ page }, use) => {
-      const loginPage = new LoginPage(page);
-      await loginPage.goto();
+	{
+		loginPage: async ({ page }, use) => {
+			const loginPage = new LoginPage(page);
+			await loginPage.goto();
 
-      await use(loginPage);
-    },
+			await use(loginPage);
+		},
 
-    dashboardPage: async ({ page }, use) => {
-      const dashboardPage = new DashboardPage(page);
-      await dashboardPage.goto();
+		dashboardPage: async ({ page }, use) => {
+			const dashboardPage = new DashboardPage(page);
+			await dashboardPage.goto();
 
-      await use(dashboardPage);
-    },
+			await use(dashboardPage);
+		},
 
-    sidePanelTabs: SIDE_PANEL_TABS,
-  }
+		// biome-ignore lint/correctness/noEmptyPattern: This requires object destructuring
+		config: async ({}, use) => {
+			await use(config);
+		},
+
+		sidePanelTabs: SIDE_PANEL_TABS,
+		baseURL: config.baseUrl,
+	},
 );
 
 export { expect } from "@playwright/test";

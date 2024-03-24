@@ -1,42 +1,48 @@
-import { Locator, Page } from "@playwright/test";
+import type { Locator, Page } from "@playwright/test";
 
 export class DashboardPage {
-  private readonly searchBar: Locator;
+	private readonly searchBar: Locator;
 
-  constructor(protected readonly page: Page) {
-    this.searchBar = this.page.getByPlaceholder("Search");
-  }
+	constructor(protected readonly page: Page) {
+		this.searchBar = this.page.getByPlaceholder("Search");
+	}
 
-  async search(query: string) {
-    await this.searchBar.fill(query);
+	async search(query: string) {
+		await this.searchBar.fill(query);
 
-    return this;
-  }
+		return this;
+	}
 
-  async goto() {
-    await this.page.goto("/web/index.php/dashboard/index");
-    return this;
-  }
+	async goto() {
+		await this.page.goto("/web/index.php/dashboard/index");
+		return this;
+	}
 
-  async clickTabButton(button: (typeof SIDE_PANEL_TABS)[number]) {
-    const buttonLocator = this.page.getByText(button);
-    await buttonLocator.click();
+	async clickTabButton(button: (typeof SIDE_PANEL_TABS)[number]) {
+		const buttonLocator = this.page.getByText(button);
+		await buttonLocator.click();
 
-    return this;
-  }
+		return this;
+	}
+
+	findButtonWithText(text: (typeof SIDE_PANEL_TABS)[number]): Locator {
+		return this.page.locator("span.oxd-main-menu-item--name", {
+			hasText: text,
+		});
+	}
 }
 
 export const SIDE_PANEL_TABS = [
-  "Admin",
-  "PIM",
-  "Leave",
-  "Time",
-  "Recruitment",
-  "My Info",
-  "Performance",
-  "Dashboard",
-  "Directory",
-  "Maintenance",
-  "Claim",
-  "Buzz",
+	"Admin",
+	"PIM",
+	"Leave",
+	"Time",
+	"Recruitment",
+	"My Info",
+	"Performance",
+	"Dashboard",
+	"Directory",
+	"Maintenance",
+	"Claim",
+	"Buzz",
 ] as const;

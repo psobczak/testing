@@ -1,4 +1,4 @@
-import { DashboardPage } from "../pages/DashboardPage";
+import { DashboardPage, SIDE_PANEL_TABS } from "../pages/DashboardPage";
 import { LoginPage } from "../pages/LoginPage";
 import { PlaywrightTestOptions, test as base } from "@playwright/test";
 
@@ -7,21 +7,29 @@ type Fixtures = {
   dashboardPage: DashboardPage;
 };
 
-export const test = base.extend<Fixtures & PlaywrightTestOptions>({
-  baseURL: process.env.BASE_URL!,
-  loginPage: async ({ page }, use) => {
-    const loginPage = new LoginPage(page);
-    await loginPage.goto();
+type TestOptions = {
+  sidePanelTabs: typeof SIDE_PANEL_TABS;
+};
 
-    await use(loginPage);
-  },
+export const test = base.extend<Fixtures & PlaywrightTestOptions & TestOptions>(
+  {
+    baseURL: process.env.BASE_URL!,
+    loginPage: async ({ page }, use) => {
+      const loginPage = new LoginPage(page);
+      await loginPage.goto();
 
-  dashboardPage: async ({ page }, use) => {
-    const dashboardPage = new DashboardPage(page);
-    await dashboardPage.goto();
+      await use(loginPage);
+    },
 
-    await use(dashboardPage);
-  },
-});
+    dashboardPage: async ({ page }, use) => {
+      const dashboardPage = new DashboardPage(page);
+      await dashboardPage.goto();
+
+      await use(dashboardPage);
+    },
+
+    sidePanelTabs: SIDE_PANEL_TABS,
+  }
+);
 
 export { expect } from "@playwright/test";

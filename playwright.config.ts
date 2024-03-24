@@ -31,16 +31,12 @@ export default defineConfig({
     {
       name: "setup",
       testMatch: /.*\.setup\.ts/,
-      use: {
-        headless: false,
-      },
     },
     {
       name: "dev",
       use: {
         ...devices["Desktop Chrome"],
         storageState: ".auth/user.json",
-        headless: false,
       },
       dependencies: ["setup"],
     },
